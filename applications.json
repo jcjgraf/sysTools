@@ -1,0 +1,15 @@
+{
+	"applications": [
+		{	
+			"application": "TextEdit",
+			"path": "/Applications/TextEdit.app",
+			"delay": 5
+		},
+		{	
+			"application": "Terminal",
+			"path": "/Applications/Utilities/Terminal.app",
+			"delay": 10
+		}
+
+	]
+}
