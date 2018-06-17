@@ -15,19 +15,35 @@ class StartContoller(object):
 		self.timeZero = time.time()
 		self.applications = [Application(applicationJSON, self.timeZero) for applicationJSON in applicationsJSON["applications"]]
 
+		# Hold the application such that the first one is the next to launch. After launch they are removed
+		self.toStart = sorted(self.applications, key=lambda application: application.startTime)
+
 		self.start()
 
 	def start(self):
-		while True:
+		"""
+			While not all applications are started. Get the first one and wait for the deltatime. Launch the application then
+		"""
+		while len(self.toStart):
 
-			currentTime = time.time()
+			application = self.toStart[0]  # get next application to start
 
-			for application in self.applications:
+			# Get time till next launch
+			delaTime = application.startTime - time.time()
 
-				if application.startTime <= currentTime and not application.isStarted:
-					application.start()
+			if delaTime >= 0:
+				time.sleep(delaTime)
 
-			time.sleep(1)
+			else:
+				time.sleep(0)
+
+			if application.startTime <= time.time() and not application.isStarted:
+
+				application.start()
+				self.toStart.remove(application)
+
+			else:
+				print("Error: Application should be started but not ready yet")
 
 
 if __name__ == '__main__':
