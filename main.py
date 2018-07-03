@@ -5,6 +5,8 @@
 
 from application import Application
 import json
+import os  # Absolut file path
+import socket  # For checking if we have internet connectivity
 
 import time
 
@@ -14,6 +16,8 @@ class StartContoller(object):
 	def __init__(self, applicationsJSON):
 		self.timeZero = time.time()
 		self.applications = [Application(applicationJSON, self.timeZero) for applicationJSON in applicationsJSON["applications"]]
+
+		self.config = self.loadConfig()
 
 		# Hold the application such that the first one is the next to launch. After launch they are removed
 		self.toStart = sorted(self.applications, key=lambda application: application.startTime)
@@ -39,17 +43,58 @@ class StartContoller(object):
 
 			if application.startTime <= time.time() and not application.isStarted:
 
-				application.start()
-				self.toStart.remove(application)
+				# Check flags
+				for flag in application.flags:
+					if flag == "i" and not isConnected():
+
+						application.startTime = application.startTime + int(self.config["retryTime"])
+						print("Not internet connectivity. Delay restart of {}".format(application.name))
+						self.toStart = sorted(self.toStart, key=lambda application: application.startTime)
+						break
+
+				else:
+					application.start()
+					self.toStart.remove(application)
+					print("Remaining applications to start: {}".format(self.toStart))
+
+					continue
 
 			else:
-				print("Error: Application should be started but not ready yet")
+				"""
+					Should not be called
+				"""
+				print("Error: Application {} should be started but not ready yet".format(application.name))
+
+	def loadConfig(self):
+		"""
+			Return the json of the config
+		"""
+		jsonPath = os.path.split(os.path.abspath(__file__))[0]
+		with open(jsonPath + "/config.json", "r") as f:
+			return json.load(f)
+
+
+def isConnected(host="8.8.8.8", port=53):
+	"""
+		Checking if we are connected to the internet by trying to establish
+		a connection to google's DNS server
+	"""
+
+	try:
+		socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((host, port))
+		return True
+
+	except Exception as e:
+		return False
 
 
 if __name__ == '__main__':
 
 	print("Started smartStart")
 
-	with open("applications.json", "r") as f:
+	# Absolut path regardless on the location of the project
+	jsonPath = os.path.split(os.path.abspath(__file__))[0]
+
+	with open(jsonPath + "/applications.json", "r") as f:
 
 		startController = StartContoller(json.load(f))

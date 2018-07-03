@@ -14,7 +14,12 @@ class Application(object):
 		self.path = applicationJSON["path"]
 		self.startTime = applicationJSON["delay"] + timeZero
 
+		self.flags = list(applicationJSON["flags"])
+
 		self.isStarted = False
+
+	def __repr__(self):
+		return self.name
 
 	def start(self):
 		"""

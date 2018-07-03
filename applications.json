@@ -1,14 +1,77 @@
 {
 	"applications": [
 		{	
-			"application": "TextEdit",
-			"path": "/Applications/TextEdit.app",
-			"delay": 5
+			"application": "Spotifree",
+			"path": "/Applications/Spotifree.app",
+			"delay": 180,
+			"flags": ""
 		},
 		{	
-			"application": "Terminal",
-			"path": "/Applications/Utilities/Terminal.app",
-			"delay": 10
+			"application": "Mail",
+			"path": "/Applications/Mail.app",
+			"delay": 10,
+			"flags": "i"
+		},
+		{	
+			"application": "Spectacle",
+			"path": "/Applications/Spectacle.app",
+			"delay": 20,
+			"flags": ""
+		},
+		{	
+			"application": "Flux",
+			"path": "/Applications/Flux.app",
+			"delay": 10,
+			"flags": ""
+		},
+		{	
+			"application": "CheatSheet",
+			"path": "/Applications/CheatSheet.app",
+			"delay": 30,
+			"flags": ""
+		},
+		{	
+			"application": "iTerm",
+			"path": "/Applications/iTerm.app",
+			"delay": 5,
+			"flags": ""
+		},
+		{	
+			"application": "EyeDrop",
+			"path": "/Applications/EyeDrop.app",
+			"delay": 120,
+			"flags": ""
+		},
+		{	
+
+			"application": "CopyClip",
+			"path": "/Applications/CopyClip.app",
+			"delay": 30,
+			"flags": ""
+		},
+		{	
+			"application": "WhatsApp",
+			"path": "/Applications/WhatsApp.app",
+			"delay": 20,
+			"flags": "i"
+		},
+		{	
+			"application": "BitTorrent",
+			"path": "/Applications/BitTorrent.app",
+			"delay": 120,
+			"flags": "i"
+		},
+		{	
+			"application": "Caffeine",
+			"path": "/Applications/Caffeine.app",
+			"delay": 60,
+			"flags": ""
+		},
+		{	
+			"application": "CopyClip",
+			"path": "/Applications/CopyClip.app",
+			"delay": 203,
+			"flags": ""
 		}
 
 	]
