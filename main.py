@@ -47,9 +47,17 @@ class StartContoller(object):
 				for flag in application.flags:
 					if flag == "i" and not isConnected():
 
+						application.retryCount += 1
+						if application.retryCount >= self.config["maxRetry"]:
+
+							self.toStart.remove(application)
+							self.isStarted = False
+							break
+
 						application.startTime = application.startTime + int(self.config["retryTime"])
 						print("Not internet connectivity. Delay restart of {}".format(application.name))
 						self.toStart = sorted(self.toStart, key=lambda application: application.startTime)
+
 						break
 
 				else:

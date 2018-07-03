@@ -18,6 +18,10 @@ class Application(object):
 
 		self.isStarted = False
 
+		# If internt connectivity is required then count the number of fails
+		if "i" in self.flags:
+			self.retryCount = 0
+
 	def __repr__(self):
 		return self.name
 

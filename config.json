@@ -1,3 +1,4 @@
 {
-	"retryTime": 60
+	"retryTime": 60,
+	"maxRetry": 5
 }
