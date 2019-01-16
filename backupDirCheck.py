@@ -40,7 +40,7 @@ def main():
 				verbosePrint(1, "Plus {}".format(path))
 
 				if not isDirValid(backupDir + path, True):
-					verbosePrint(3, "Warning: Path {} should exist in the backupdir {} but it does not!".format(path, backupDir))
+					verbosePrint(3, "Warning: Path {} should exist in the backupdir {} but it does not: {}".format(path, backupDir, backupDir + path))
 				else:
 					verbosePrint(1, "Path {} exists in backupdir {}".format(path, backupDir))
 
@@ -48,8 +48,8 @@ def main():
 				path = elem[1:].strip()
 				verbosePrint(1, "Minus {}".format(path))
 
-				if not isDirValid(backupDir + path, True):
-					verbosePrint(3, "Warning: Path {} should not exist in the backupdir {} but it is there!".format(path, backupDir))
+				if not isDirValid(backupDir + path, False):
+					verbosePrint(3, "Warning: Path {} should not exist in the backupdir {} but it is there: {}".format(path, backupDir, backupDir + path))
 				else:
 					verbosePrint(1, "Path {} is not available in backupdir {}".format(path, backupDir))
 
