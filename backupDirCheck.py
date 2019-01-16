@@ -1,52 +1,71 @@
 #!/usr/bin/env python3
 
-import sys, argparse
+import sys, os, argparse
 
-def main(argv=[]):
+verbosePrint = None
+
+def main():
 	excludeFilePath = None
 	excludeFileContent = []
+	backupDir = None
 
 	parser = argparse.ArgumentParser()
-	parser.add_argument('-v', '--verbosity', action="count", help="increase output verbosity (e.g., -vv is more than -v)")
+	parser.add_argument("-v", "--verbosity", action="count", help="increase output verbosity (e.g., -vv is more than -v)")
+	parser.add_argument("-i", "--excludePatternFile", type=argparse.FileType('r'), help="provide path to the exclude-pattern file")
+	parser.add_argument("-b", "--backupDir", help="path to the backup directory")
 
-	try:
-		opts, args = getopt.getopt(argv,"hi:",["help", "excludeFile="])
-	except getopt.GetoptError:
-		print("Usage:")
-		print(sys.argv[0]+ " -i <excludeFile>")
-		sys.exit(2)
+	args = parser.parse_args()
 
-	for opt, arg in opts:
-		if opt == '-h':
-			print(sys.argv[0]+ " -i <excludeFile>")
-			sys.exit()
-		elif opt in ("-i", "--excludeFile"):
-			excludeFilePath = arg
+	if args.verbosity:
+		def _verbosePrint(*verb_args):
+			if verb_args[0] > (3 - args.verbosity):
+				print(verb_args[1])
+	else:
+		_verbosePrint = lambda *a: None
 
-	with open(excludeFilePath, "r") as f:
-		excludeFileContent = list(filter(None, f.read().splitlines()))
+	global verbosePrint
+ 	verbosePrint = _verbosePrint
 
-	print(excludeFileContent)
+ 	if args.backupDir:
+ 		backupDir = args.backupDir.rstrip("/")
 
-	for elem in excludeFileContent:
-		if elem[0:1] == "+":
-			print("Plus " + elem[1:].strip())
+	if args.excludePatternFile and backupDir is not None:
 
-		elif elem[0:1] == "-":
-			print("Minus " + elem[1:].strip())
+		with args.excludePatternFile as f:
+			excludeFileContent = list(filter(None, f.read().splitlines()))
 
-		else:
-			print("Not a valid exclude pattern. Ignoring it.")
+		for elem in excludeFileContent:
+			if elem[0:1] == "+":
+				path = elem[1:].strip()
+				verbosePrint(1, "Plus {}".format(path))
 
-if verbose:
-    def verbosePrint(*verb_args):
-            if verb_args[0] > (3 - verbose):
-                print verb_args[1]
-    else:
-        _v_print = lambda *a: None  # do-nothing function
+				if not isDirValid(backupDir + path, True):
+					verbosePrint(3, "Warning: Path {} should exist in the backupdir {} but it does not!".format(path, backupDir))
+				else:
+					verbosePrint(1, "Path {} exists in backupdir {}".format(path, backupDir))
 
-verboseprint = print( if verbose else lambda *a, **k: None
+			elif elem[0:1] == "-":
+				path = elem[1:].strip()
+				verbosePrint(1, "Minus {}".format(path))
+
+				if not isDirValid(backupDir + path, True):
+					verbosePrint(3, "Warning: Path {} should not exist in the backupdir {} but it is there!".format(path, backupDir))
+				else:
+					verbosePrint(1, "Path {} is not available in backupdir {}".format(path, backupDir))
+
+			else:
+				verbosePrint(2, "Not valid entry: {}".format(elem))
+
+	else:
+		verbosePrint(3, "Command not valid, please refere to the help page")
+
+def isDirValid(path, shouldExist):
+
+	if (os.path.isdir(path) and shouldExist) or (not os.path.isdir(path) and not shouldExist):
+		return True
+
+	else:
+		return False
 
 if __name__ == "__main__":
-	# main(sys.argv[1:])
-	verboseprint("look at all my verbosity!", object(), 3)
+	main()
