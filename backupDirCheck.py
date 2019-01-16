@@ -24,10 +24,10 @@ def main():
 		_verbosePrint = lambda *a: None
 
 	global verbosePrint
- 	verbosePrint = _verbosePrint
+	verbosePrint = _verbosePrint
 
- 	if args.backupDir:
- 		backupDir = args.backupDir.rstrip("/")
+	if args.backupDir:
+		backupDir = args.backupDir.rstrip("/")
 
 	if args.excludePatternFile and backupDir is not None:
 
